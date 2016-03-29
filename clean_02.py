@@ -11,52 +11,74 @@
 # All indentation must be 4 spaces.
 # A 4 space indentation indicates a block level indent
 
+import argparse
 import sys
 import lxml.html
 from lxml import etree
 from lxml.html.clean import Cleaner
 
-def main(): 
 
-    # Lets grab this from the input
-    # file_name = "test00.html"  # original html file
-    input_file = sys.argv[1]
-    cleaned_file = "foo.html"  # file for cleaned up html
-
-    # The attributes I want to remove are specific to the file I am working on...
-
-    # Notice my variable naming convention changes
-    rm_tags = ['class', 'style', 'cellspacing', 'data-mc-pattern']
-
-    tree = etree.parse(input_file)
-    to_clean = etree.tostring(tree)
-
-    # TODO: Use cleaner to clean extra stuff... 
-    #clean = Cleaner(page_structure = False, links = False, style = True)
-
-    # Call clean function and get the result. 
-    # Takes etree, list [, True].  Use True as 3rd arg if you want to print a before and after
-    result = clean_more_crud(to_clean, rm_tags, True) 
-
-    # Save results to file
-    #new_file = open(cleaned_file, 'w')
-    #new_file.write(result)
-    #new_file.close()
-
-    # Cleaner way to write to files in python
-    with open(cleaned_file, 'w') as f:
-        f.write(result)
-
-
-def clean_more_crud(to_clean, rm_tags, show_results = False):
+def options_parser(argv):
 
     '''
+    Function to gather and parse cli options.
+    '''
+
+    p = argparse.ArgumentParser(description='HTML Sanitizer.',
+                                prog='pyclean')
+
+    p.add_argument('inputfile', type=argparse.FileType('r'),
+                   metavar='file', help='HTML input file to be cleansed.')
+
+    p.add_argument('-o', '--output_file', type=str,
+                   help='File to write output to.', required=False)
+
+    p.add_argument('-t','--tags', nargs='+', dest='tags', 
+                   help='Tags to clean', required=True)
+
+    p.add_argument('-v', '--version', action='version',
+                   version='%(prog)s 0.0.1')
+
+    return p.parse_known_args()
+
+
+
+
+def main(): 
+
+    opts, leftovers = options_parser(sys.argv[1:])
+
+    tree = etree.parse(opts.inputfile)
+    file_to_clean = etree.tostring(tree)
+
+    result = clean_more_crud(file_to_clean, opts.tags, True) 
+
+    # Cleaner way to write to files in python
+    if opts.output_file:
+        with open(opts.output_file, 'w') as f:
+            f.write(result)
+
+
+def clean_more_crud(file_to_clean, rm_tags, show_results = False):
+
+    '''returns result
+ 
     This function cleans up extra attributes in file
     if 3rd arg is true, it will print the input string 
     before and after cleaning
+
+    
+    :param file_to_clean: name of file to clean
+    :param rm_tags: tags to be removed
+    :param show_results: show the results
+    :type to_clean: str
+    :type rm_tags: list
+    :type show_results: bool
+    :returns: result
+    :rtype: string
     '''
 
-    html = lxml.html.fromstring(to_clean)	# Parse the html
+    html = lxml.html.fromstring(file_to_clean)
 	
     if show_results:
         result = lxml.html.tostring(html)
@@ -66,7 +88,8 @@ def clean_more_crud(to_clean, rm_tags, show_results = False):
     # // = select all tags matching expression
     #  * = match any tag,  [@class] = match all class attributes
 
-    for a in rm_tags: # Go through the list and remove 
+    # Go through the list and remove 
+    for a in rm_tags:      
         for tag in html.xpath('//*[@' + a + ']'):
             tag.attrib.pop(a)
 
@@ -74,7 +97,7 @@ def clean_more_crud(to_clean, rm_tags, show_results = False):
 
     if show_results:
         print_result("AFTER", result)
-    
+
     return result
 
 	
