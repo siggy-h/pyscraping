@@ -101,14 +101,14 @@ def clean_more_crud(file_to_clean, rm_tags, show_results = False):
     return result
 
 	
-def print_result(label, toPrint):
+def print_result(label, to_print):
 
     '''
     If 3rd arg is true, this will print 
     the input string before and after cleaning
     '''
     print("\n*****   " + label +"   *****\n")
-    print(toPrint)
+    print(to_print)
 
 
 
