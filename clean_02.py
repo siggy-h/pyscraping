@@ -7,17 +7,20 @@
 # I referenced this stackoverflow question for help eliminating the "class" attribute
 # http://stackoverflow.com/questions/10037289/remove-class-attribute-from-html-using-python-and-lxml
 
+# Some notes along the way
+# All indentation must be 4 spaces.
+# A 4 space indentation indicates a block level indent
+
+import sys
 import lxml.html
 from lxml import etree
 from lxml.html.clean import Cleaner
 
 def main(): 
 
-    # Some notes along the way
-    # All indentation must be 4 spaces.
-    # A 4 space indentation indicates a block level indent
-
-    file_name = "test00.html"  # original html file
+    # Lets grab this from the input
+    # file_name = "test00.html"  # original html file
+    input_file = sys.argv[1]
     cleaned_file = "foo.html"  # file for cleaned up html
 
     # The attributes I want to remove are specific to the file I am working on...
@@ -25,7 +28,7 @@ def main():
     # Notice my variable naming convention changes
     rm_tags = ['class', 'style', 'cellspacing', 'data-mc-pattern']
 
-    tree = etree.parse(file_name)
+    tree = etree.parse(input_file)
     to_clean = etree.tostring(tree)
 
     # TODO: Use cleaner to clean extra stuff... 
