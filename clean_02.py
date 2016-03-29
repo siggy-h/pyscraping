@@ -1,5 +1,6 @@
-# "clean_02.py"
+#!/usr/bin/python
 # Copyright (c) Siggy Hinds
+# "clean_02.py"
 # This program opens an external html file. Removes the specified attributes from css tags.
 # Cleaned up html is then saved into a new file.
 #
@@ -11,57 +12,69 @@ from lxml import etree
 from lxml.html.clean import Cleaner
 
 def main(): 
-	file_name 		= "test00.html"		# original html file
-	cleaned_file 	= "foo.html"			# file for cleaned up html
-	
-	# The attributes I want to remove are specific to the file I am working on...
-	rmFromTags = ['class', 'style', 'cellspacing', 'data-mc-pattern']
 
-	tree = etree.parse(file_name)
-	to_clean = etree.tostring(tree)
+    # Some notes along the way
+    # All indentation must be 4 spaces.
+    # A 4 space indentation indicates a block level indent
 
-	# todo- Use cleaner to clean extra stuff... 
-	#clean = Cleaner(page_structure = False, links = False, style = True)
+    file_name = "test00.html"  # original html file
+    cleaned_file = "foo.html"  # file for cleaned up html
 
-	# Call clean function and get the result. 
-	# Takes etree, list [, True].  Use True as 3rd arg if you want to print a before and after
-	result = clean_more_crud(to_clean, rmFromTags, True) 
-	
-	# Save results to file
-	new_file = open(cleaned_file, 'w')
-	new_file.write(result)
-	new_file.close()
+    # The attributes I want to remove are specific to the file I am working on...
+
+    # Notice my variable naming convention changes
+    rm_tags = ['class', 'style', 'cellspacing', 'data-mc-pattern']
+
+    tree = etree.parse(file_name)
+    to_clean = etree.tostring(tree)
+
+    # TODO: Use cleaner to clean extra stuff... 
+    #clean = Cleaner(page_structure = False, links = False, style = True)
+
+    # Call clean function and get the result. 
+    # Takes etree, list [, True].  Use True as 3rd arg if you want to print a before and after
+    result = clean_more_crud(to_clean, rm_tags, True) 
+
+    # Save results to file
+    #new_file = open(cleaned_file, 'w')
+    #new_file.write(result)
+    #new_file.close()
+
+    # Cleaner way to write to files in python
+    with open(cleaned_file, 'w') as f:
+        f.write(result)
 
 
 # This function cleans up extra attributes in file 
 # if 3rd arg is true, it will print the input string before and after cleaning
 def clean_more_crud(to_clean, rmFromTags, show_results = False):  #takes
 
-	html = lxml.html.fromstring(to_clean)	# Parse the html
+    html = lxml.html.fromstring(to_clean)	# Parse the html
 	
-	if show_results:
-		result = lxml.html.tostring(html)
-		print_result("BEFORE", result)
+    if show_results:
+        result = lxml.html.tostring(html)
+        print_result("BEFORE", result)
 
-	# .xpath below gives us a list of all elements that have a class attribute
-	# // = select all tags matching expression
-	#  * = match any tag,  [@class] = match all class attributes
-	for a in rmFromTags: # Go through the list and remove 
-		for tag in html.xpath('//*[@' + a + ']'):
-			tag.attrib.pop(a)
+    # .xpath below gives us a list of all elements that have a class attribute
+    # // = select all tags matching expression
+    #  * = match any tag,  [@class] = match all class attributes
 
-	result = lxml.html.tostring(html) 
+    for a in rmFromTags: # Go through the list and remove 
+        for tag in html.xpath('//*[@' + a + ']'):
+            tag.attrib.pop(a)
 
-	if show_results:
-		print_result("AFTER", result)
+    result = lxml.html.tostring(html) 
 
-	return result
+    if show_results:
+        print_result("AFTER", result)
+    
+    return result
 
 	
 # This prints a label and string
 def print_result(label, toPrint):
-	print("\n*****   " + label +"   *****\n")
-	print(toPrint)
+    print("\n*****   " + label +"   *****\n")
+    print(toPrint)
 
 
 
