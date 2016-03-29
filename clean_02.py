@@ -45,9 +45,13 @@ def main():
         f.write(result)
 
 
-# This function cleans up extra attributes in file 
-# if 3rd arg is true, it will print the input string before and after cleaning
-def clean_more_crud(to_clean, rmFromTags, show_results = False):  #takes
+def clean_more_crud(to_clean, rm_tags, show_results = False):
+
+    '''
+    This function cleans up extra attributes in file
+    if 3rd arg is true, it will print the input string 
+    before and after cleaning
+    '''
 
     html = lxml.html.fromstring(to_clean)	# Parse the html
 	
@@ -59,7 +63,7 @@ def clean_more_crud(to_clean, rmFromTags, show_results = False):  #takes
     # // = select all tags matching expression
     #  * = match any tag,  [@class] = match all class attributes
 
-    for a in rmFromTags: # Go through the list and remove 
+    for a in rm_tags: # Go through the list and remove 
         for tag in html.xpath('//*[@' + a + ']'):
             tag.attrib.pop(a)
 
@@ -71,8 +75,12 @@ def clean_more_crud(to_clean, rmFromTags, show_results = False):  #takes
     return result
 
 	
-# This prints a label and string
 def print_result(label, toPrint):
+
+    '''
+    If 3rd arg is true, this will print 
+    the input string before and after cleaning
+    '''
     print("\n*****   " + label +"   *****\n")
     print(toPrint)
 
