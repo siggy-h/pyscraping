@@ -29,4 +29,12 @@ optional arguments:
 ./clean_02.py test00.html -t class style cellspacing data-mc-pattern -o out.txt
 ```
 
-# Contributing
+# Usage - extended
+
+To run this application
+
+```bash
+$ git clone https://github.com/siggy-h/pyscraping.git
+$ cd pyscraping
+$ pip install -r requirements.txt
+```
