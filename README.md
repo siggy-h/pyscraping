@@ -29,3 +29,4 @@ optional arguments:
 ./clean_02.py test00.html -t class style cellspacing data-mc-pattern -o out.txt
 ```
 
+# Contributing
